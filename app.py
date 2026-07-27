@@ -195,39 +195,9 @@ with st.sidebar:
     if not vectorstore:
         st.error("⚠️ قاعدة البيانات غير موجودة! شغّل سكربت الفهرسة لبنائها أولاً.")
 
-# ── 3.5. شريط التطبيق العلوي الذكي (Top Navigation Bar) ──
-st.markdown(f"""
-<div class="diwan-top-bar">
-    <div class="top-bar-right">
-        <div class="top-bar-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
-                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
-                <path d="M7 21h10"/>
-                <path d="M12 3v18"/>
-                <path d="M3 7h18"/>
-            </svg>
-        </div>
-        <div class="top-bar-title">
-            <span>الديوان الرقمي</span>
-            <small>للقانون المدني اليمني (2002)</small>
-        </div>
-    </div>
-    <div class="top-bar-left">
-        <div class="top-bar-badge live-pulse">
-            <span class="status-dot"></span>
-            <span>{"متصل • 2,920 مادة" if vectorstore else "غير متصل"}</span>
-        </div>
-        <div class="top-bar-badge ai-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span>معزّز بـ AI</span>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
 
 # ── 4. الهيدر الرئيسي (Hero Header) ──
-st.markdown("""
+st.markdown(f"""
 <div class="diwan-hero-container">
     <svg class="diwan-hero-bg-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>

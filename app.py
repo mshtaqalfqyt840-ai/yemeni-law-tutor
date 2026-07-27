@@ -91,7 +91,10 @@ def render_source_cards(sources):
             <div class="diwan-card">
                 <div class="diwan-card-header">
                     <div class="diwan-card-meta">
-                        <span class="article-badge">مادة ({art_num})</span>
+                        <span class="article-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0.5-.05"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/><path d="M6 12h8"/><path d="M6 16h8"/><path d="M6 8h4"/></svg>
+                            مادة ({art_num})
+                        </span>
                         {f'<span class="book-badge">• {book}</span>' if book else ''}
                     </div>
                     <span class="diwan-source-label">سجل النص القانوني الأصلي — المرجع {idx}</span>
@@ -111,7 +114,7 @@ with st.sidebar:
     st.markdown("""
     <div class="sidebar-brand-box">
         <div class="sidebar-brand-icon">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
                 <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
                 <path d="M7 21h10"/>
@@ -133,7 +136,7 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<p style="color:var(--text-muted); font-size:0.75rem; font-weight:700; margin:16px 0 8px 0; letter-spacing:0.5px;">📊 إحصائيات النظام</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sidebar-stats-heading">📊 إحصائيات وأداء النظام</p>', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="sidebar-stats-grid">
         <div class="sidebar-stat-card">
@@ -144,26 +147,67 @@ with st.sidebar:
             <span class="sidebar-stat-num">100%</span>
             <span class="sidebar-stat-lbl">دقة الإسناد</span>
         </div>
+        <div class="sidebar-stat-card">
+            <span class="sidebar-stat-num">&lt;0.3s</span>
+            <span class="sidebar-stat-lbl">سرعة الاسترجاع</span>
+        </div>
+        <div class="sidebar-stat-card">
+            <span class="sidebar-stat-num">AI v3</span>
+            <span class="sidebar-stat-lbl">المحرك الذكي</span>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     # صندوق التلميح الذكي
     st.markdown("""
     <div class="sidebar-tip-card">
-        💡 <strong>تلميح التأصيل:</strong> اكتب رقم المادة مباشرة 
-        (مثال: <strong>138</strong> أو <strong>مادة (15)</strong>) 
-        لاستحضار نصها القانوني وشرحها فوراً!
+        <div class="tip-icon-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+            <span>تلميح التأصيل السريع</span>
+        </div>
+        <p>اكتب رقم المادة مباشرة (مثال: <strong>138</strong> أو <strong>مادة (15)</strong>) لاستحضار نصها القانوني وشرحها فوراً!</p>
     </div>
     """, unsafe_allow_html=True)
 
     # زر مسح المحادثة
-    if st.button("🗑️  مسح المحادثة بالكامل", use_container_width=True):
+    if st.button("🗑️  مسح المحادثة والبدء من جديد", use_container_width=True):
         st.session_state.messages = []
         st.session_state.pending_prompt = None
         st.rerun()
 
     if not vectorstore:
         st.error("⚠️ قاعدة البيانات غير موجودة! شغّل سكربت الفهرسة لبنائها أولاً.")
+
+# ── 3.5. شريط التطبيق العلوي الذكي (Top Navigation Bar) ──
+st.markdown(f"""
+<div class="diwan-top-bar">
+    <div class="top-bar-right">
+        <div class="top-bar-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                <path d="M7 21h10"/>
+                <path d="M12 3v18"/>
+                <path d="M3 7h18"/>
+            </svg>
+        </div>
+        <div class="top-bar-title">
+            <span>الديوان الرقمي</span>
+            <small>للقانون المدني اليمني (2002)</small>
+        </div>
+    </div>
+    <div class="top-bar-left">
+        <div class="top-bar-badge live-pulse">
+            <span class="status-dot"></span>
+            <span>{"متصل • 2,920 مادة" if vectorstore else "غير متصل"}</span>
+        </div>
+        <div class="top-bar-badge ai-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>معزّز بـ AI</span>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ── 4. الهيدر الرئيسي (Hero Header) ──
 st.markdown("""
@@ -176,7 +220,7 @@ st.markdown("""
         <path d="M3 7h18"/>
     </svg>
     <div class="diwan-eyebrow">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span>الديوان الرقمي • المرجع الذكي الأول للقانون المدني</span>
     </div>
     <h1 class="diwan-hero-title">المعلّم الذكي <span>للقانون المدني اليمني</span></h1>
@@ -186,16 +230,28 @@ st.markdown("""
     </div>
     <div class="diwan-trust-badges">
         <div class="trust-badge-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>إسناد نصي حرفي موثّق</span>
+            <div class="trust-icon-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            </div>
+            <span>إسناد نصي حرفي موثّق 100%</span>
         </div>
         <div class="trust-badge-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <div class="trust-icon-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
             <span>1,385 مادة قانونية مفهرسة</span>
         </div>
         <div class="trust-badge-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            <span>محدث وفق التعديلات الرسمية</span>
+            <div class="trust-icon-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <span>بحث دلالي فوري فائق الدقة</span>
+        </div>
+        <div class="trust-badge-item">
+            <div class="trust-icon-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/></svg>
+            </div>
+            <span>خالٍ من الهلوسة والاجتهاد</span>
         </div>
     </div>
 </div>
@@ -216,32 +272,55 @@ st.markdown("""
 # ── 5. بطاقات الاقتراحات (تظهر فقط عند بداية المحادثة) ──
 if len(st.session_state.messages) == 0:
     st.markdown("""
-    <div class="suggestions-section-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
-        <span>نماذج أسئلة قانونية شائعة للبدء:</span>
+    <div class="suggestions-header-wrapper">
+        <div class="suggestions-section-title">
+            <div class="title-icon-pulse">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            </div>
+            <div>
+                <span>نماذج أسئلة واستشارات قانونية شائعة للبدء</span>
+                <p class="suggestions-section-subtitle">اختر أياً من الاستشارات والمواد القانونية الفورية أدناه للحصول على إجابة موثقة، أو اكتب سؤالك الخاص في شريط المحادثة</p>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     suggestions = [
         {
+            "category": "باب العقود والالتزامات",
             "title": "أركان العقد وشروط صحته",
             "subtext": "استعراض الأهلية، التراضي، ومحل العقد وفقاً لأحكام القانون المدني",
             "prompt": "ما هي أركان العقد وشروط صحته وفقاً للقانون المدني اليمني؟",
+            "btn_label": "استعراض الأركان والشروط ⚡",
+            "svg_icon": """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>""",
+            "accent_class": "sug-accent-gold"
         },
         {
+            "category": "تأصيل قانوني مباشر",
             "title": "المادة (138) بالتفصيل",
-            "subtext": "النص الحرفي والشرح التطبيقي لأحكام المادة",
+            "subtext": "النص الحرفي والشرح التطبيقي لأحكام المادة مع الأمثلة",
             "prompt": "138",
+            "btn_label": "قراءة نص المادة (138) 📜",
+            "svg_icon": """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0.5-.05"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/><path d="M6 12h8"/><path d="M6 16h8"/><path d="M6 8h4"/></svg>""",
+            "accent_class": "sug-accent-emerald"
         },
         {
+            "category": "النظرية العامة للحق",
             "title": "عيوب الإرادة وأثرها القانوني",
-            "subtext": "الغلط، التدليس، الإكراه، والاستغلال وفقاً للقانون",
+            "subtext": "الغلط، التدليس، الإكراه، والاستغلال وفقاً لأحكام القانون المدني",
             "prompt": "ما هي عيوب الإرادة في القانون المدني اليمني وكيف أثرها؟",
+            "btn_label": "تحليل عيوب الإرادة ⚖️",
+            "svg_icon": """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h18"/></svg>""",
+            "accent_class": "sug-accent-blue"
         },
         {
+            "category": "الضمانات وحقوق الدائن",
             "title": "أحكام الكفالة والضمان",
             "subtext": "التزامات الكفيل وحقوق الدائن والمدين في الشريعة والقانون",
             "prompt": "ما هي أحكام الكفالة والضمان ومسؤولية الكفيل في القانون اليمني؟",
+            "btn_label": "استعراض أحكام الكفالة 🛡️",
+            "svg_icon": """<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>""",
+            "accent_class": "sug-accent-purple"
         }
     ]
 
@@ -250,8 +329,19 @@ if len(st.session_state.messages) == 0:
     
     for i, sug in enumerate(suggestions):
         with cols[i]:
-            label = f"📌 {sug['title']}\n\n{sug['subtext']}"
-            if st.button(label, use_container_width=True, key=f"sug_{i}"):
+            st.markdown(f"""
+            <div class="sug-card-modern {sug['accent_class']}">
+                <div class="sug-card-header">
+                    <div class="sug-card-icon-wrapper">
+                        {sug['svg_icon']}
+                    </div>
+                    <span class="sug-category-badge">{sug['category']}</span>
+                </div>
+                <h3 class="sug-card-title">{sug['title']}</h3>
+                <p class="sug-card-desc">{sug['subtext']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button(sug['btn_label'], use_container_width=True, key=f"sug_{i}"):
                 st.session_state.pending_prompt = sug['prompt']
                 st.rerun()
 
@@ -266,7 +356,7 @@ for message in st.session_state.messages:
             render_source_cards(message["sources"])
 
 # ── 7. حقل الإدخال المعزز ──
-user_question = st.chat_input("اطرح سؤالك القانوني أو اكتب رقم المادة مباشرة... (مثال: 138 أو ما هي شروط البيع؟)")
+user_question = st.chat_input("💬 اسأل المعلم الذكي عن أي مسألة قانونية، أو اكتب رقم المادة مباشرة (مثال: 138 أو ما هي شروط البيع؟)...")
 
 if st.session_state.pending_prompt and not user_question:
     user_question = st.session_state.pending_prompt

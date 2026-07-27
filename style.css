@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   🏛️ المعلّم الذكي للقانون المدني اليمني — نظام تصميم "الديوان الرقمي"
-   The Digital Diwan Design System (2026 Edition)
+   🏛️ المعلّم الذكي للقانون المدني اليمني — نظام تصميم "الديوان الرقمي" 2026
+   The Digital Diwan Design System (Ultra-Modern UI Edition)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── 1. استيراد الخطوط (Google Fonts) ── */
@@ -11,6 +11,7 @@
     /* الأسطح والخلفيات (الخناجر والداكنة) */
     --ink-950: #05070D;
     --ink-900: #0A0E1A;
+    --ink-850: #0E1424;
     --ink-800: #121A2E;
     --ink-700: #1B2540;
     --ink-600: #253356;
@@ -21,10 +22,15 @@
     --gold-300: #E8D18C;
     --gold-100: rgba(201, 162, 39, 0.08);
 
-    /* المؤشرات الحية */
+    /* المؤشرات الحية والجماليات */
     --emerald-500: #10B981;
     --emerald-400: #34D399;
     --emerald-bg: rgba(16, 185, 129, 0.08);
+
+    --blue-500: #3B82F6;
+    --blue-400: #60A5FA;
+    --purple-500: #8B5CF6;
+    --purple-400: #A78BFA;
 
     /* السجل القانوني المقتبس (لمسة المخطوطة/الرق) */
     --parchment-100: #EFE6D0;
@@ -38,15 +44,16 @@
 
     /* الحدود والظلال */
     --border-subtle: rgba(255, 255, 255, 0.07);
-    --border-gold: rgba(201, 162, 39, 0.2);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-    --shadow-gold: 0 4px 20px rgba(201, 162, 39, 0.12);
+    --border-gold: rgba(201, 162, 39, 0.22);
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.45);
+    --shadow-gold: 0 4px 22px rgba(201, 162, 39, 0.15);
 
     /* الأشكال والخطوط */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 18px;
+    --radius-xl: 22px;
     --radius-full: 9999px;
 
     --font-display: 'El Messiri', serif;
@@ -54,7 +61,7 @@
     --font-ui: 'IBM Plex Sans Arabic', sans-serif;
 
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 240ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* الثيم الفاتح (الديوان النهاري) */
@@ -62,6 +69,7 @@
     :root[data-theme="light"], .light-mode {
         --ink-950: #F7F2E7;
         --ink-900: #EFE6D0;
+        --ink-850: #E7DBC4;
         --ink-800: #FFFFFF;
         --ink-700: #E2D7C3;
         --ink-600: #CBD5E1;
@@ -100,19 +108,119 @@ html, body, [class*="css"], .stApp {
     background: var(--ink-950) !important;
 }
 
-/* خلفية هندسية رصينة للديوان */
+/* خلفية هندسية رصينة للديوان مع هالات ضوئية متدرجة */
 .stApp::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image: 
-        radial-gradient(ellipse 70% 45% at 20% 0%, rgba(201, 162, 39, 0.05) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 80% 100%, rgba(16, 185, 129, 0.03) 0%, transparent 70%);
+        radial-gradient(ellipse 70% 45% at 20% 0%, rgba(201, 162, 39, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 100%, rgba(16, 185, 129, 0.04) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
 }
 
-/* ── 4. الشريط الجانبي (Sidebar) ── */
+/* ── 4. شريط التطبيق العلوي الذكي (Top Navigation Bar) ── */
+.diwan-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10, 14, 26, 0.85);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.top-bar-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(201, 162, 39, 0.12);
+    border: 1px solid rgba(201, 162, 39, 0.35);
+    color: var(--gold-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.top-bar-logo svg {
+    width: 22px;
+    height: 22px;
+}
+
+.top-bar-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.top-bar-title span {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    line-height: 1.25;
+}
+
+.top-bar-title small {
+    font-size: 0.75rem;
+    color: var(--gold-400);
+    font-weight: 500;
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.top-bar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.top-bar-badge.live-pulse {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.32);
+    color: var(--emerald-400);
+}
+
+.top-bar-badge.ai-badge {
+    background: rgba(201, 162, 39, 0.12);
+    border: 1px solid rgba(201, 162, 39, 0.32);
+    color: var(--gold-400);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--emerald-400);
+    box-shadow: 0 0 8px var(--emerald-400);
+    animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.35); opacity: 0.6; }
+}
+
+/* ── 5. الشريط الجانبي (Sidebar) ── */
 [data-testid="stSidebar"] {
     background: var(--ink-900) !important;
     border-left: 1px solid var(--border-gold) !important;
@@ -125,29 +233,30 @@ html, body, [class*="css"], .stApp {
 .sidebar-brand-box {
     background: linear-gradient(180deg, rgba(201, 162, 39, 0.08) 0%, rgba(18, 26, 46, 0) 100%);
     border-bottom: 1px solid var(--border-subtle);
-    padding: 24px 18px 20px;
+    padding: 26px 18px 22px;
     text-align: center;
     margin-bottom: 16px;
     border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .sidebar-brand-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     margin: 0 auto 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(201, 162, 39, 0.1);
+    background: rgba(201, 162, 39, 0.12);
     border: 1px solid var(--border-gold);
-    border-radius: 12px;
+    border-radius: 14px;
     color: var(--gold-500);
+    box-shadow: var(--shadow-sm);
 }
 
 .sidebar-brand-title {
     font-family: var(--font-display) !important;
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     color: var(--text-primary);
     margin: 0 0 4px 0;
     letter-spacing: -0.01em;
@@ -164,14 +273,14 @@ html, body, [class*="css"], .stApp {
     line-height: 1.5;
 }
 
-/* مؤشر الاتصال الحي */
+/* مؤشر الاتصال الحي في الشريط الجانبي */
 .live-status-pill {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     background: var(--emerald-bg);
-    border: 1px solid rgba(16, 185, 129, 0.25);
+    border: 1px solid rgba(16, 185, 129, 0.28);
     border-radius: var(--radius-md);
     padding: 10px 14px;
     margin: 14px 0;
@@ -183,33 +292,37 @@ html, body, [class*="css"], .stApp {
 .live-status-dot {
     width: 8px;
     height: 8px;
-    background: var(--emerald-500);
+    background-color: var(--emerald-500);
     border-radius: 50%;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25), 0 0 8px rgba(16, 185, 129, 0.6);
-    animation: live-pulse 2.2s infinite ease-in-out;
-    flex-shrink: 0;
+    box-shadow: 0 0 8px var(--emerald-500);
+    animation: pulse-dot 2s infinite;
 }
 
-@keyframes live-pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.15); opacity: 0.75; }
+.sidebar-stats-heading {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 16px 0 10px 0;
+    letter-spacing: 0.5px;
 }
 
-/* شبكة الإحصائيات بالسجل */
 .sidebar-stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin: 16px 0;
+    margin-bottom: 20px;
 }
 
 .sidebar-stat-card {
     background: var(--ink-800);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 12px 10px;
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
     text-align: center;
-    transition: border-color var(--transition-fast);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: border-color var(--transition-base);
 }
 
 .sidebar-stat-card:hover {
@@ -218,162 +331,163 @@ html, body, [class*="css"], .stApp {
 
 .sidebar-stat-num {
     font-family: var(--font-ui);
-    font-variant-numeric: tabular-nums;
     font-weight: 700;
-    font-size: 1.35rem;
-    color: var(--gold-500);
-    display: block;
-    line-height: 1.2;
+    font-size: 1.15rem;
+    color: var(--gold-400);
+    line-height: 1;
 }
 
 .sidebar-stat-lbl {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--text-secondary);
-    display: block;
-    margin-top: 4px;
 }
 
-/* صندوق التلميح الذكي */
 .sidebar-tip-card {
-    background: var(--ink-800);
-    border: 1px solid var(--border-subtle);
-    border-right: 3px solid var(--gold-500);
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(18, 26, 46, 0.6) 100%);
+    border: 1px solid var(--border-gold);
     border-radius: var(--radius-md);
-    padding: 14px 14px;
-    margin: 16px 0;
+    padding: 14px 16px;
     font-size: 0.8125rem;
-    color: var(--text-secondary);
-    line-height: 1.75;
+    color: var(--text-primary);
+    line-height: 1.65;
+    margin-bottom: 20px;
 }
 
-.sidebar-tip-card strong {
-    color: var(--gold-300);
-    font-weight: 600;
+.tip-icon-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--gold-400);
+    margin-bottom: 6px;
+    font-size: 0.88rem;
 }
 
-/* زر مسح المحادثة */
-div[data-testid="stSidebar"] .stButton > button {
-    background: rgba(239, 68, 68, 0.08) !important;
-    border: 1px solid rgba(239, 68, 68, 0.22) !important;
-    color: #FCA5A5 !important;
-    font-family: var(--font-ui) !important;
-    font-weight: 600 !important;
-    border-radius: var(--radius-md) !important;
-    transition: all var(--transition-fast) !important;
-    padding: 10px 16px !important;
-}
-
-div[data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(239, 68, 68, 0.16) !important;
-    border-color: rgba(239, 68, 68, 0.45) !important;
-    color: #F87171 !important;
-    transform: translateY(-1px);
-}
-
-/* ── 5. الهيدر الرئيسي (Hero Header) ── */
+/* ── 6. الهيدر الرئيسي (Hero Header) ── */
 .diwan-hero-container {
     position: relative;
-    background: var(--ink-800);
+    background: linear-gradient(150deg, rgba(18, 26, 46, 0.75) 0%, rgba(10, 14, 26, 0.95) 100%);
     border: 1px solid var(--border-gold);
-    border-radius: var(--radius-lg);
-    padding: 36px 40px;
-    margin-bottom: 24px;
+    border-radius: var(--radius-xl);
+    padding: 38px 40px;
+    margin-bottom: 26px;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), var(--shadow-gold);
 }
 
-/* رسم خلفية زُخرفي بصري */
 .diwan-hero-bg-svg {
     position: absolute;
-    left: -20px;
-    top: -20px;
-    width: 260px;
-    height: 260px;
-    opacity: 0.04;
-    pointer-events: none;
+    left: -40px;
+    top: -40px;
+    width: 380px;
+    height: 380px;
     color: var(--gold-500);
+    opacity: 0.035;
+    pointer-events: none;
+    transform: rotate(-15deg);
 }
 
 .diwan-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--gold-100);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius-full);
-    padding: 4px 14px;
+    background: rgba(201, 162, 39, 0.1);
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    color: var(--gold-400);
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--gold-500);
-    margin-bottom: 14px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    margin-bottom: 18px;
 }
 
 .diwan-hero-title {
     font-family: var(--font-display) !important;
-    font-weight: 700;
-    font-size: 2.25rem;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.25;
     color: var(--text-primary);
-    margin: 0 0 12px 0;
-    line-height: 1.3;
+    margin: 0 0 16px 0;
+    letter-spacing: -0.02em;
 }
 
 .diwan-hero-title span {
-    color: var(--gold-500);
+    background: linear-gradient(135deg, #C9A227 0%, #F5E5AD 50%, #C9A227 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 .diwan-hero-desc {
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: var(--text-secondary);
-    line-height: 1.85;
-    max-width: 720px;
-    margin-bottom: 24px;
+    line-height: 1.8;
+    max-width: 820px;
+    margin-bottom: 28px;
+    font-weight: 400;
 }
 
 .diwan-hero-desc strong {
-    color: var(--gold-300);
+    color: var(--text-primary);
     font-weight: 600;
 }
 
-/* شارات الثقة المدمجة */
 .diwan-trust-badges {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 12px;
-    padding-top: 16px;
+    padding-top: 20px;
     border-top: 1px solid var(--border-subtle);
 }
 
 .trust-badge-item {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 6px 12px;
-    font-size: 0.8125rem;
+    border-radius: var(--radius-md);
+    padding: 8px 14px;
+    font-size: 0.83rem;
     color: var(--text-secondary);
+    transition: all var(--transition-base);
 }
 
-.trust-badge-item svg {
+.trust-badge-item:hover {
+    background: rgba(201, 162, 39, 0.08);
+    border-color: var(--border-gold);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.trust-icon-box {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(201, 162, 39, 0.12);
     color: var(--gold-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 
-/* ── 6. بانر التنبيه القانوني (Legal Warning) ── */
+/* ── 7. بانر التنبيه القانوني (Legal Warning) ── */
 .diwan-warning-banner {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     background: var(--ink-800);
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    border: 1px solid rgba(245, 158, 11, 0.32);
     border-right: 4px solid #F59E0B;
     border-radius: var(--radius-md);
     padding: 16px 20px;
     margin-bottom: 28px;
     color: var(--text-primary);
-    font-size: 0.875rem;
+    font-size: 0.88rem;
     line-height: 1.7;
+    box-shadow: var(--shadow-sm);
 }
 
 .warning-icon-wrapper {
@@ -386,105 +500,202 @@ div[data-testid="stSidebar"] .stButton > button:hover {
     color: #FBBF24;
 }
 
-/* ── 7. بطاقات الاقتراحات السريعة (Asymmetric Suggestion Cards) ── */
+/* ── 8. قسم الاقتراحات والاستشارات السريعة (Modern Suggestion Cards) ── */
+.suggestions-header-wrapper {
+    margin-bottom: 20px;
+}
+
 .suggestions-section-title {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.suggestions-section-title svg {
-    color: var(--gold-500);
-}
-
-/* تنسيق أزرار الاقتراحات في Streamlit */
-div[data-testid="stColumn"] .stButton > button {
-    width: 100% !important;
-    background: var(--ink-800) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-right: 3px solid var(--ink-700) !important;
-    border-radius: var(--radius-md) !important;
-    padding: 14px 16px !important;
-    text-align: right !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 6px !important;
-    transition: all var(--transition-base) !important;
-    min-height: 80px !important;
-    white-space: pre-wrap !important;
-    word-break: break-word !important;
-    box-shadow: var(--shadow-sm) !important;
-}
-
-div[data-testid="stColumn"] .stButton > button:hover {
-    background: var(--ink-700) !important;
-    border-color: var(--border-gold) !important;
-    border-right-color: var(--gold-500) !important;
-    transform: translateY(-3px) !important;
-    box-shadow: var(--shadow-gold) !important;
-}
-
-/* تمييز البطاقة الأولى البارزة */
-.st-key-sug_0 button {
-    background: linear-gradient(135deg, var(--ink-800) 0%, rgba(201, 162, 39, 0.06) 100%) !important;
-    border-color: rgba(201, 162, 39, 0.3) !important;
-    border-right: 4px solid var(--gold-500) !important;
-}
-
-.sug-card-inner {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    width: 100%;
 }
 
-.sug-card-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    background: rgba(201, 162, 39, 0.1);
+.title-icon-pulse {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(201, 162, 39, 0.12);
+    border: 1px solid var(--border-gold);
     color: var(--gold-500);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(201, 162, 39, 0.15);
 }
 
-.sug-card-body {
+.suggestions-section-title span {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.suggestions-section-subtitle {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin: 4px 0 0 0;
+}
+
+/* بطاقة الاقتراح الحديثة - الجزء العلوي (Card Header & Body) */
+.sug-card-modern {
+    background: linear-gradient(155deg, rgba(18, 26, 46, 0.85) 0%, rgba(10, 14, 26, 0.95) 100%);
+    border: 1px solid var(--border-gold);
+    border-bottom: none;
+    border-radius: 18px 18px 0 0;
+    padding: 20px 20px 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-base);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* شريط إضاءة علوي ملون حسب موضوع البطاقة */
+.sug-card-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    background: var(--gold-500);
+    opacity: 0.85;
+}
+
+.sug-accent-gold::before { background: linear-gradient(90deg, #C9A227, #E8D18C); }
+.sug-accent-emerald::before { background: linear-gradient(90deg, #10B981, #34D399); }
+.sug-accent-blue::before { background: linear-gradient(90deg, #3B82F6, #60A5FA); }
+.sug-accent-purple::before { background: linear-gradient(90deg, #8B5CF6, #A78BFA); }
+
+.sug-card-header {
     display: flex;
-    flex-direction: column;
-    text-align: right;
-    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.sug-card-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.sug-accent-gold .sug-card-icon-wrapper {
+    background: rgba(201, 162, 39, 0.15);
+    border: 1px solid rgba(201, 162, 39, 0.35);
+    color: #DBB53B;
+}
+
+.sug-accent-emerald .sug-card-icon-wrapper {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34D399;
+}
+
+.sug-accent-blue .sug-card-icon-wrapper {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: #60A5FA;
+}
+
+.sug-accent-purple .sug-card-icon-wrapper {
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    color: #A78BFA;
+}
+
+.sug-category-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.3px;
+}
+
+.sug-accent-gold .sug-category-badge {
+    background: rgba(201, 162, 39, 0.1);
+    color: #E8D18C;
+    border: 1px solid rgba(201, 162, 39, 0.25);
+}
+
+.sug-accent-emerald .sug-category-badge {
+    background: rgba(16, 185, 129, 0.1);
+    color: #34D399;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.sug-accent-blue .sug-category-badge {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60A5FA;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.sug-accent-purple .sug-category-badge {
+    background: rgba(139, 92, 246, 0.1);
+    color: #A78BFA;
+    border: 1px solid rgba(139, 92, 246, 0.25);
 }
 
 .sug-card-title {
-    font-family: var(--font-ui);
-    font-weight: 600;
-    font-size: 0.95rem;
+    font-family: var(--font-display) !important;
+    font-size: 1.15rem;
+    font-weight: 700;
     color: var(--text-primary);
-    line-height: 1.4;
+    margin: 0 0 6px 0;
+    line-height: 1.35;
 }
 
-.sug-card-subtext {
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-    font-weight: 400;
-    margin-top: 4px;
-    line-height: 1.5;
-    white-space: normal;
+.sug-card-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+    min-height: 44px;
 }
 
-div[data-testid="stColumn"] .stButton > button:hover .sug-card-title {
-    color: var(--gold-300);
+/* تنسيق زر Streamlit أسفل البطاقة ليكون هو الجزء السفلي المتصل بالبطاقة (Card Footer Button) */
+div[data-testid="stColumn"] .stButton > button {
+    width: 100% !important;
+    background: linear-gradient(180deg, rgba(18, 26, 46, 0.9) 0%, rgba(10, 14, 26, 0.95) 100%) !important;
+    border: 1px solid var(--border-gold) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 0 0 18px 18px !important;
+    padding: 12px 18px !important;
+    color: var(--gold-400) !important;
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+    cursor: pointer !important;
+    min-height: 48px !important;
+    letter-spacing: 0.2px !important;
 }
 
-/* ── 8. فقاعات المحادثة (Chat Bubbles & Avatars) ── */
+div[data-testid="stColumn"] .stButton > button:hover {
+    background: linear-gradient(135deg, var(--gold-500) 0%, #DBB53B 100%) !important;
+    border-color: var(--gold-400) !important;
+    color: #05070D !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(201, 162, 39, 0.35) !important;
+}
+
+/* حركة التمرير على البطاقة عندما يمرر المستخدم الفأرة */
+div[data-testid="stColumn"]:hover .sug-card-modern {
+    border-color: rgba(201, 162, 39, 0.45);
+    background: linear-gradient(155deg, rgba(27, 37, 64, 0.9) 0%, rgba(18, 26, 46, 0.98) 100%);
+}
+
+/* ── 9. فقاعات المحادثة (Chat Bubbles & Avatars) ── */
 [data-testid="stChatMessage"] {
     background: transparent !important;
     border: none !important;
@@ -516,14 +727,15 @@ div[data-testid="stColumn"] .stButton > button:hover .sug-card-title {
 
 /* الأفاتار (الرموز المصغرة) */
 [data-testid="stChatMessageAvatarContainer"] {
-    background: var(--ink-800) !important;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.18) 0%, rgba(18, 26, 46, 0.8) 100%) !important;
     border: 1px solid var(--border-gold) !important;
     border-radius: 50% !important;
-    width: 40px !important;
-    height: 40px !important;
+    width: 42px !important;
+    height: 42px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* نصوص المحادثة */
@@ -592,7 +804,7 @@ div[data-testid="stColumn"] .stButton > button:hover .sug-card-title {
     margin-bottom: 6px !important;
 }
 
-/* ── 9. العنصر التوقيعي: بطاقة "السجل القانوني" (The Register Card) ── */
+/* ── 10. العنصر التوقيعي: بطاقة "السجل القانوني" (The Register Card) ── */
 [data-testid="stExpander"] {
     background: var(--ink-800) !important;
     border: 1px solid var(--border-gold) !important;
@@ -656,7 +868,7 @@ div[data-testid="stColumn"] .stButton > button:hover .sug-card-title {
     border-radius: var(--radius-full);
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 }
 
 .book-badge {
@@ -697,20 +909,20 @@ div[data-testid="stColumn"] .stButton > button:hover .sug-card-title {
     margin: 0;
 }
 
-/* ── 10. حقل الإدخال التفاعلي (Glassmorphic Chat Input) ── */
+/* ── 11. حقل الإدخال التفاعلي (Glassmorphic Chat Input) ── */
 .stChatInputContainer {
-    background: rgba(10, 14, 26, 0.85) !important;
-    border: 1px solid var(--border-gold) !important;
+    background: rgba(10, 14, 26, 0.88) !important;
+    border: 1.5px solid var(--border-gold) !important;
     border-radius: var(--radius-lg) !important;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5), var(--shadow-gold) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
     transition: all var(--transition-base) !important;
 }
 
 .stChatInputContainer:focus-within {
     border-color: var(--gold-500) !important;
-    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(201, 162, 39, 0.15) !important;
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.65), 0 0 30px rgba(201, 162, 39, 0.25) !important;
 }
 
 .stChatInputContainer textarea {
@@ -725,7 +937,7 @@ div[data-testid="stColumn"] .stButton > button:hover .sug-card-title {
     color: var(--text-muted) !important;
 }
 
-/* ── 11. إمكانية الوصول والتفاعل (Focus & Reduced Motion) ── */
+/* ── 12. إمكانية الوصول والتفاعل (Focus & Reduced Motion) ── */
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
@@ -743,7 +955,7 @@ textarea:focus-visible,
     }
 }
 
-/* ── 12. التجاوب مع مختلف الشاشات (Mobile Responsiveness) ── */
+/* ── 13. التجاوب مع مختلف الشاشات (Mobile Responsiveness) ── */
 @media (max-width: 768px) {
     /* ضبط الحاوية الرئيسية على الشاشات الصغيرة */
     .main .block-container {
@@ -754,12 +966,36 @@ textarea:focus-visible,
         max-width: 100% !important;
     }
 
+    /* شريط التطبيق العلوي للهواتف */
+    .diwan-top-bar {
+        padding: 10px 14px;
+        margin-bottom: 16px;
+        border-radius: var(--radius-md);
+    }
+
+    .top-bar-title span {
+        font-size: 0.98rem;
+    }
+
+    .top-bar-title small {
+        font-size: 0.7rem;
+    }
+
+    .top-bar-badge.ai-badge {
+        display: none; /* الحفاظ على مساحة الهاتف */
+    }
+
+    .top-bar-badge.live-pulse {
+        padding: 4px 10px;
+        font-size: 0.72rem;
+    }
+
     /* تحويل جميع الأعمدة المقسمة إلى عمود واحد مرن وسهل التصفح */
     [data-testid="column"], [data-testid="stColumn"] {
         width: 100% !important;
         flex: 1 1 100% !important;
         min-width: 100% !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 14px !important;
     }
 
     /* تخصيص الشريط الجانبي في الهاتف لمنع التداخل والتغطية الكلية */
@@ -771,59 +1007,73 @@ textarea:focus-visible,
 
     /* الهيدر البارز (Hero Container) */
     .diwan-hero-container {
-        padding: 20px 16px !important;
-        border-radius: var(--radius-md) !important;
-        margin-bottom: 16px !important;
+        padding: 22px 18px !important;
+        border-radius: var(--radius-lg) !important;
+        margin-bottom: 18px !important;
     }
 
     .diwan-hero-title {
-        font-size: 1.4rem !important;
+        font-size: 1.6rem !important;
         line-height: 1.35 !important;
         margin-bottom: 10px !important;
     }
 
     .diwan-hero-desc {
-        font-size: 0.875rem !important;
-        line-height: 1.65 !important;
-        margin-bottom: 16px !important;
+        font-size: 0.9rem !important;
+        line-height: 1.7 !important;
+        margin-bottom: 18px !important;
     }
 
     .diwan-eyebrow {
         font-size: 0.75rem !important;
-        padding: 3px 10px !important;
-        margin-bottom: 10px !important;
+        padding: 4px 12px !important;
+        margin-bottom: 12px !important;
     }
 
     .diwan-trust-badges {
         display: flex !important;
         flex-direction: column !important;
-        gap: 6px !important;
-        padding-top: 12px !important;
+        gap: 8px !important;
+        padding-top: 14px !important;
     }
 
     .trust-badge-item {
-        font-size: 0.775rem !important;
-        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+        padding: 8px 12px !important;
         width: 100% !important;
         box-sizing: border-box !important;
     }
 
     /* بانر التنبيه القانوني */
     .diwan-warning-banner {
-        padding: 12px 14px !important;
-        font-size: 0.8rem !important;
-        line-height: 1.6 !important;
-        margin-bottom: 18px !important;
+        padding: 14px 16px !important;
+        font-size: 0.82rem !important;
+        line-height: 1.65 !important;
+        margin-bottom: 20px !important;
         gap: 10px !important;
+    }
+
+    /* بطاقات الاقتراحات على الهاتف */
+    .sug-card-modern {
+        border-radius: 16px 16px 0 0;
+        padding: 16px 16px 12px;
+    }
+
+    .sug-card-title {
+        font-size: 1.05rem;
+    }
+
+    .sug-card-desc {
+        font-size: 0.82rem;
+        min-height: 38px;
     }
 
     /* أزرار نماذج الأسئلة للمحمول */
     div[data-testid="stColumn"] .stButton > button {
-        min-height: auto !important;
+        min-height: 48px !important;
         padding: 12px 14px !important;
-        font-size: 0.85rem !important;
-        border-radius: var(--radius-md) !important;
-        line-height: 1.5 !important;
+        font-size: 0.88rem !important;
+        border-radius: 0 0 16px 16px !important;
     }
 
     .sidebar-stats-grid {
@@ -833,24 +1083,24 @@ textarea:focus-visible,
 
     /* فقاعات المحادثة على الهاتف */
     [data-testid="stChatMessage"] {
-        padding: 14px 14px !important;
+        padding: 16px 16px !important;
         margin-bottom: 12px !important;
         border-radius: var(--radius-md) !important;
     }
 
     [data-testid="stChatMessage"] p {
-        font-size: 0.925rem !important;
-        line-height: 1.75 !important;
+        font-size: 0.94rem !important;
+        line-height: 1.8 !important;
     }
 
     /* شريط الإدخال في الأسفل للمحمول */
     .stChatInputContainer {
         margin-bottom: 6px !important;
-        border-radius: 14px !important;
+        border-radius: 16px !important;
     }
 
     .stChatInputContainer textarea {
-        font-size: 0.875rem !important;
+        font-size: 0.9rem !important;
         padding: 10px 12px !important;
     }
 
@@ -862,26 +1112,26 @@ textarea:focus-visible,
     .diwan-card-header {
         flex-direction: column !important;
         align-items: flex-start !important;
-        gap: 6px !important;
+        gap: 8px !important;
     }
 
     .quote-text {
-        font-size: 1rem !important;
+        font-size: 1.05rem !important;
         line-height: 1.75 !important;
     }
 }
 
 @media (max-width: 480px) {
     .diwan-hero-title {
-        font-size: 1.25rem !important;
+        font-size: 1.4rem !important;
     }
 
     .sidebar-brand-title {
-        font-size: 1.2rem !important;
+        font-size: 1.25rem !important;
     }
 
     .sidebar-stats-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr 1fr !important;
     }
 }
 
@@ -900,9 +1150,7 @@ textarea:focus-visible,
     background: var(--gold-500);
 }
 
-/* ── 13. زر القائمة الجانبية التفاعلي (Modern Mobile App Hamburger Menu ☰) ── */
-
-/* إخفاء الهيدر الرمادي الافتراضي لستريمليت وجعل خلفيته شفافة */
+/* ── 14. زر القائمة الجانبية التفاعلي (Modern Mobile App Hamburger Menu ☰) ── */
 [data-testid="stHeader"] {
     background: transparent !important;
     z-index: 99990 !important;

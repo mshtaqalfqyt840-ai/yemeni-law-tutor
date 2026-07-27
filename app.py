@@ -110,104 +110,103 @@ def render_source_cards(sources):
 total_docs = vectorstore._collection.count() if vectorstore else 0
 
 
-# ── 4. الهيدر الرئيسي (Hero Header) ──
-st.markdown(f"""
-<div class="diwan-hero-container">
-    <svg class="diwan-hero-bg-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
-        <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
-        <path d="M7 21h10"/>
-        <path d="M12 3v18"/>
-        <path d="M3 7h18"/>
-    </svg>
-    <div class="diwan-eyebrow">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span>الديوان الرقمي • المرجع الذكي الأول للقانون المدني</span>
-    </div>
-    <h1 class="diwan-hero-title">المعلّم الذكي <span>للقانون المدني اليمني</span></h1>
-    <div class="diwan-hero-desc">
-        منصة تفاعلية موثّقة لتقديم الشروح والاستشارات الأكاديمية المستندة 
-        <strong>حصرياً</strong> على النص الرسمي للقرار الجمهوري بالقانون رقم (14) لسنة 2002م، دون هلوسة أو اجتهاد خارجي.
-    </div>
-    <div class="diwan-trust-badges">
-        <div class="trust-badge-item">
-            <div class="trust-icon-box">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-            </div>
-            <span>إسناد نصي حرفي موثّق 100%</span>
-        </div>
-        <div class="trust-badge-item">
-            <div class="trust-icon-box">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            </div>
-            <span>{total_docs:,} مادة قانونية مفهرسة</span>
-        </div>
-        <div class="trust-badge-item">
-            <div class="trust-icon-box">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            <span>بحث دلالي فوري فائق الدقة</span>
-        </div>
-        <div class="trust-badge-item">
-            <div class="trust-icon-box">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/></svg>
-            </div>
-            <span>خالٍ من الهلوسة والاجتهاد</span>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# ── 4. الهيدر التفاعلي وكبسولات التأصيل (Dynamic Hero & Quick Chips) ──
+total_docs = vectorstore._collection.count() if vectorstore else 0
 
-# تنبيه قانوني رسمي
-st.markdown("""
-<div class="diwan-warning-banner">
-    <div class="warning-icon-wrapper">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    </div>
-    <div>
-        <strong>تنبيه قانوني هام:</strong> الإجابات المقدمة هي لأغراض الدراسة والتعليم والأبحاث الأكاديمية فقط، ولا تُعد استشارة قانونية رسمية ملزمة. يُرجى مراجعة محامٍ مرخص أو قاضٍ متخصص عند معالجة القضايا الفعلية.
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# ── 4.5. شريط أدوات التحكم والعمليات السريعة ──
-ctrl_col1, ctrl_col2 = st.columns([1, 1])
-with ctrl_col1:
-    if st.button("🗑️ مسح المحادثة والبدء من جديد", use_container_width=True, key="reset_chat_main"):
-        st.session_state.messages = []
-        st.session_state.pending_prompt = None
-        st.rerun()
-
-with ctrl_col2:
-    has_key = st.session_state.api_manager.has_usable_key()
-    with st.expander("🔑 إدارة مفتاح Gemini API", expanded=not has_key):
-        main_api_key = st.text_input(
-            "ألصق مفتاح Gemini API هنا لتفعيل المحادثة:",
-            type="password",
-            placeholder="AIzaSy... أو AQ...",
-            key="main_page_api_key"
-        )
-        if main_api_key:
-            if st.session_state.api_manager.add_key(main_api_key, source="الواجهة الرئيسية"):
-                st.success("✅ تم تفعيل المفتاح بنجاح!")
-                st.rerun()
-            else:
-                st.error("⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ.")
-        elif not has_key:
-            st.caption("💡 [احصل على مفتاح مجاني من Google AI Studio](https://aistudio.google.com/app/apikey)")
-
-
-# ── 5. بطاقات الاقتراحات (تظهر فقط عند بداية المحادثة) ──
 if len(st.session_state.messages) == 0:
+    st.markdown(f"""
+    <div class="diwan-hero-container">
+        <svg class="diwan-hero-bg-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+            <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+            <path d="M7 21h10"/>
+            <path d="M12 3v18"/>
+            <path d="M3 7h18"/>
+        </svg>
+        <div class="diwan-eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>الديوان الرقمي • المرجع الذكي الأول للقانون المدني</span>
+        </div>
+        <h1 class="diwan-hero-title">المعلّم الذكي <span>للقانون المدني اليمني</span></h1>
+        <div class="diwan-hero-desc">
+            منصة تفاعلية موثّقة لتقديم الشروح والاستشارات الأكاديمية المستندة 
+            <strong>حصرياً</strong> على النص الرسمي للقرار الجمهوري بالقانون رقم (14) لسنة 2002م، دون هلوسة أو اجتهاد خارجي.
+        </div>
+        <div class="diwan-trust-badges">
+            <div class="trust-badge-item">
+                <div class="trust-icon-box">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                </div>
+                <span>إسناد نصي حرفي موثّق 100%</span>
+            </div>
+            <div class="trust-badge-item">
+                <div class="trust-icon-box">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <span>{total_docs:,} مادة قانونية مفهرسة</span>
+            </div>
+            <div class="trust-badge-item">
+                <div class="trust-icon-box">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <span>بحث دلالي فوري فائق الدقة</span>
+            </div>
+            <div class="trust-badge-item">
+                <div class="trust-icon-box">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/></svg>
+                </div>
+                <span>خالٍ من الهلوسة والاجتهاد</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # تنبيه قانوني رسمي
     st.markdown("""
-    <div class="suggestions-header-wrapper">
+    <div class="diwan-warning-banner">
+        <div class="warning-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+            <strong>تنبيه قانوني هام:</strong> الإجابات المقدمة هي لأغراض الدراسة والتعليم والأبحاث الأكاديمية فقط، ولا تُعد استشارة قانونية رسمية ملزمة. يُرجى مراجعة محامٍ مرخص أو قاضٍ متخصص عند معالجة القضايا الفعلية.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── كبسولات التأصيل السريعة ──
+    st.markdown('<p style="font-size:0.85rem; color:var(--gold-400); margin: 15px 0 8px; font-weight:600;">⚡ كبسولات التأصيل السريع بنقرة واحدة:</p>', unsafe_allow_html=True)
+    chip_col1, chip_col2, chip_col3, chip_col4, chip_col5 = st.columns(5)
+    with chip_col1:
+        if st.button("📜 المادة (138)", use_container_width=True, key="chip_138"):
+            st.session_state.pending_prompt = "138"
+            st.rerun()
+    with chip_col2:
+        if st.button("⚖️ أركان العقد", use_container_width=True, key="chip_arkan"):
+            st.session_state.pending_prompt = "ما هي أركان العقد وشروط صحته وفقاً للقانون المدني اليمني؟"
+            st.rerun()
+    with chip_col3:
+        if st.button("🛡️ أحكام الكفالة", use_container_width=True, key="chip_kafaala"):
+            st.session_state.pending_prompt = "ما هي أحكام الكفالة والضمان ومسؤولية الكفيل في القانون اليمني؟"
+            st.rerun()
+    with chip_col4:
+        if st.button("🔍 عيوب الإرادة", use_container_width=True, key="chip_eyoob"):
+            st.session_state.pending_prompt = "ما هي عيوب الإرادة في القانون المدني اليمني وكيف أثرها؟"
+            st.rerun()
+    with chip_col5:
+        if st.button("📑 شروط البيع", use_container_width=True, key="chip_buy"):
+            st.session_state.pending_prompt = "ما هي شروط عقد البيع والتزامات البائع والمشتري في القانون المدني؟"
+            st.rerun()
+
+    # ── بطاقات الاقتراحات ──
+    st.markdown("""
+    <div class="suggestions-header-wrapper" style="margin-top: 15px;">
         <div class="suggestions-section-title">
             <div class="title-icon-pulse">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
             </div>
             <div>
                 <span>نماذج أسئلة واستشارات قانونية شائعة للبدء</span>
-                <p class="suggestions-section-subtitle">اختر أياً من الاستشارات والمواد القانونية الفورية أدناه للحصول على إجابة موثقة، أو اكتب سؤالك الخاص في شريط المحادثة</p>
+                <p class="suggestions-section-subtitle">اختر أياً من الاستشارات أدناه للحصول على إجابة موثقة، أو اكتب سؤالك الخاص بأسفل الصفحة</p>
             </div>
         </div>
     </div>
@@ -274,6 +273,47 @@ if len(st.session_state.messages) == 0:
                 st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
+else:
+    # شريط تنقل علوي مضغوط وأنيق أثناء الجلسة الجارية
+    st.markdown(f"""
+    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(10,14,26,0.9); border:1px solid var(--border-gold); padding:10px 18px; border-radius:14px; margin-bottom:15px; backdrop-filter:blur(12px);">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:700; color:var(--gold-400); font-size:0.95rem;">⚖️ المعلّم الذكي</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);">• جلسة محادثة قانونية جارية</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:0.78rem; color:var(--emerald-400); background:rgba(16,185,129,0.12); padding:4px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3);">🟢 متصل • {total_docs:,} مادة</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ── شريط التحكم وإدارة المفاتيح ──
+ctrl_col1, ctrl_col2 = st.columns([1, 1])
+with ctrl_col1:
+    if st.button("🗑️ مسح المحادثة والبدء من جديد", use_container_width=True, key="reset_chat_main"):
+        st.session_state.messages = []
+        st.session_state.pending_prompt = None
+        st.rerun()
+
+with ctrl_col2:
+    has_key = st.session_state.api_manager.has_usable_key()
+    with st.expander("🔑 إدارة مفتاح Gemini API", expanded=not has_key):
+        main_api_key = st.text_input(
+            "ألصق مفتاح Gemini API هنا لتفعيل المحادثة:",
+            type="password",
+            placeholder="AIzaSy... أو AQ...",
+            key="main_page_api_key"
+        )
+        if main_api_key:
+            if st.session_state.api_manager.add_key(main_api_key, source="الواجهة الرئيسية"):
+                st.success("✅ تم تفعيل المفتاح بنجاح!")
+                st.rerun()
+            else:
+                st.error("⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ.")
+        elif not has_key:
+            st.caption("💡 [احصل على مفتاح مجاني من Google AI Studio](https://aistudio.google.com/app/apikey)")
+
+
 
 # ── 6. عرض سجل المحادثة ──
 for message in st.session_state.messages:

@@ -409,14 +409,16 @@ div[data-testid="stColumn"] .stButton > button {
     border: 1px solid var(--border-subtle) !important;
     border-right: 3px solid var(--ink-700) !important;
     border-radius: var(--radius-md) !important;
-    padding: 16px 18px !important;
+    padding: 14px 16px !important;
     text-align: right !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 6px !important;
     transition: all var(--transition-base) !important;
-    min-height: 90px !important;
+    min-height: 80px !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
     box-shadow: var(--shadow-sm) !important;
 }
 
@@ -743,25 +745,143 @@ textarea:focus-visible,
 
 /* ── 12. التجاوب مع مختلف الشاشات (Mobile Responsiveness) ── */
 @media (max-width: 768px) {
+    /* ضبط الحاوية الرئيسية على الشاشات الصغيرة */
+    .main .block-container {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+        padding-top: 0.5rem !important;
+        padding-bottom: 5.5rem !important;
+        max-width: 100% !important;
+    }
+
+    /* تحويل جميع الأعمدة المقسمة إلى عمود واحد مرن وسهل التصفح */
+    [data-testid="column"], [data-testid="stColumn"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* تخصيص الشريط الجانبي في الهاتف لمنع التداخل والتغطية الكلية */
+    [data-testid="stSidebar"] {
+        max-width: 85vw !important;
+        width: 85vw !important;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    /* الهيدر البارز (Hero Container) */
     .diwan-hero-container {
-        padding: 24px 20px;
+        padding: 20px 16px !important;
+        border-radius: var(--radius-md) !important;
+        margin-bottom: 16px !important;
     }
 
     .diwan-hero-title {
-        font-size: 1.75rem;
+        font-size: 1.4rem !important;
+        line-height: 1.35 !important;
+        margin-bottom: 10px !important;
     }
 
-    .sidebar-stats-grid {
-        grid-template-columns: 1fr;
+    .diwan-hero-desc {
+        font-size: 0.875rem !important;
+        line-height: 1.65 !important;
+        margin-bottom: 16px !important;
+    }
+
+    .diwan-eyebrow {
+        font-size: 0.75rem !important;
+        padding: 3px 10px !important;
+        margin-bottom: 10px !important;
     }
 
     .diwan-trust-badges {
-        flex-direction: column;
-        gap: 8px;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+        padding-top: 12px !important;
     }
 
+    .trust-badge-item {
+        font-size: 0.775rem !important;
+        padding: 6px 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* بانر التنبيه القانوني */
+    .diwan-warning-banner {
+        padding: 12px 14px !important;
+        font-size: 0.8rem !important;
+        line-height: 1.6 !important;
+        margin-bottom: 18px !important;
+        gap: 10px !important;
+    }
+
+    /* أزرار نماذج الأسئلة للمحمول */
     div[data-testid="stColumn"] .stButton > button {
+        min-height: auto !important;
+        padding: 12px 14px !important;
+        font-size: 0.85rem !important;
+        border-radius: var(--radius-md) !important;
+        line-height: 1.5 !important;
+    }
+
+    .sidebar-stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+    }
+
+    /* فقاعات المحادثة على الهاتف */
+    [data-testid="stChatMessage"] {
         padding: 14px 14px !important;
+        margin-bottom: 12px !important;
+        border-radius: var(--radius-md) !important;
+    }
+
+    [data-testid="stChatMessage"] p {
+        font-size: 0.925rem !important;
+        line-height: 1.75 !important;
+    }
+
+    /* شريط الإدخال في الأسفل للمحمول */
+    .stChatInputContainer {
+        margin-bottom: 6px !important;
+        border-radius: 14px !important;
+    }
+
+    .stChatInputContainer textarea {
+        font-size: 0.875rem !important;
+        padding: 10px 12px !important;
+    }
+
+    /* بطاقة السجل القانوني */
+    .diwan-card {
+        padding: 14px 14px !important;
+    }
+
+    .diwan-card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+    }
+
+    .quote-text {
+        font-size: 1rem !important;
+        line-height: 1.75 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .diwan-hero-title {
+        font-size: 1.25rem !important;
+    }
+
+    .sidebar-brand-title {
+        font-size: 1.2rem !important;
+    }
+
+    .sidebar-stats-grid {
+        grid-template-columns: 1fr !important;
     }
 }
 

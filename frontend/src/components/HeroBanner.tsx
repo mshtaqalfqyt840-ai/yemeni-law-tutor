@@ -44,7 +44,7 @@ export const HeroBanner: React.FC = () => {
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
             </svg>
           </span>
-          <span>1,385 مادة قانونية مفهرسة</span>
+          <span>2,920 مادة قانونية مفهرسة</span>
         </div>
         <div className="trust-badge">
           <span className="trust-icon">

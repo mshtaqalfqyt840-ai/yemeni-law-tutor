@@ -256,7 +256,7 @@ st.markdown("""
             <div class="trust-icon-box">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             </div>
-            <span>1,385 مادة قانونية مفهرسة</span>
+            <span>{total_docs:,} مادة قانونية مفهرسة</span>
         </div>
         <div class="trust-badge-item">
             <div class="trust-icon-box">
@@ -449,6 +449,7 @@ if user_question:
                     MessagesPlaceholder("chat_history"),
                     ("human", "{input}"),
                 ])
+                active_key = None
                 for attempt in range(max(1, usable_attempts)):
                     try:
                         active_key = st.session_state.api_manager.get_active_key()
@@ -466,11 +467,16 @@ if user_question:
                         })
                         break
                     except Exception as e:
-                        st.session_state.api_manager.mark_key_as_failed(active_key, error=e)
+                        if active_key:
+                            try:
+                                st.session_state.api_manager.mark_key_as_failed(active_key, error=e)
+                            except Exception:
+                                pass
 
         # 2. توليد الرد التدفقي البث الحي (Streaming Response)
         tutor_prompt = get_tutor_prompt()
         answer = ""
+        active_key = None
         for attempt in range(max(1, usable_attempts)):
             try:
                 active_key = st.session_state.api_manager.get_active_key()
@@ -501,10 +507,14 @@ if user_question:
                 if answer and len(str(answer).strip()) > 0:
                     break
             except Exception as e:
-                try:
-                    st.session_state.api_manager.mark_key_as_failed(active_key, error=e)
-                except ValueError as ve:
-                    st.error(f"❌ {ve}")
+                if active_key:
+                    try:
+                        st.session_state.api_manager.mark_key_as_failed(active_key, error=e)
+                    except ValueError as ve:
+                        st.error(f"❌ {ve}")
+                        st.stop()
+                else:
+                    st.error(f"❌ تعثر الحصول على مفتاح Gemini API صالح: {e}")
                     st.stop()
 
                 if attempt < usable_attempts - 1:

@@ -5,7 +5,7 @@
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 # إعدادات نموذج المحادثة
-LLM_MODEL = "gemini-1.5-flash"  # النموذج المعتمد والفعال رسمياً في Gemini API
+LLM_MODEL = "gemini-flash-latest"  # النموذج المعتمد والفعال رسمياً في Gemini API
 LLM_TEMPERATURE = 0.1
 
 # إعدادات البحث

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { SystemStats } from '../types';
+import { saveApiKey } from '../services/api';
 
 interface SidebarProps {
   stats: SystemStats;
@@ -14,6 +15,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectPrompt,
   onReset
 }) => {
+  const [apiKey, setApiKey] = useState('');
+  const [keyStatus, setKeyStatus] = useState<{ success?: boolean; message?: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSaveKey = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!apiKey.trim()) return;
+    setIsSubmitting(true);
+    const res = await saveApiKey(apiKey.trim());
+    setKeyStatus(res);
+    setIsSubmitting(false);
+    if (res.success) {
+      setApiKey('');
+    }
+  };
+
   const quickPills = ["138", "مادة (15)", "أركان العقد", "عيوب الإرادة", "الكفالة"];
 
   return (
@@ -24,6 +41,81 @@ export const Sidebar: React.FC<SidebarProps> = ({
           الديوان الرقمي للقانون المدني اليمني<br />
           القرار الجمهوري رقم (14) لسنة 2002م
         </p>
+      </div>
+
+      {/* 🗝️ قسم مفتاح الذكاء الاصطناعي (Gemini API) */}
+      <div className="sidebar-api-key-box" style={{
+        background: 'rgba(13, 21, 38, 0.75)',
+        border: '1px solid var(--border-glass)',
+        borderRadius: '12px',
+        padding: '12px 14px',
+        margin: '10px 0'
+      }}>
+        <p className="sidebar-stats-title" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+          🔑 <span>مفتاح Gemini API</span>
+        </p>
+        <form onSubmit={handleSaveKey} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <input
+            type="password"
+            name="gemini-api-key"
+            autoComplete="new-password"
+            placeholder="AIzaSy... أو AQ..."
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            disabled={isSubmitting}
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              border: '1px solid rgba(223, 176, 89, 0.3)',
+              background: 'rgba(6, 11, 20, 0.8)',
+              color: '#fff',
+              fontSize: '0.85rem',
+              outline: 'none'
+            }}
+          />
+          <button
+            type="submit"
+            disabled={isSubmitting || !apiKey.trim()}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'linear-gradient(135deg, #dfb059 0%, #b8860b 100%)',
+              color: '#060b14',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: apiKey.trim() ? 'pointer' : 'not-allowed',
+              opacity: apiKey.trim() ? 1 : 0.6
+            }}
+          >
+            {isSubmitting ? 'جاري الحفظ...' : 'تفعيل المفتاح ✨'}
+          </button>
+        </form>
+        {keyStatus.message && (
+          <p style={{
+            fontSize: '0.78rem',
+            marginTop: '8px',
+            color: keyStatus.success ? '#10b981' : '#f87171',
+            lineHeight: 1.4
+          }}>
+            {keyStatus.message}
+          </p>
+        )}
+        <a
+          href="https://aistudio.google.com/app/apikey"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-block',
+            fontSize: '0.75rem',
+            color: 'var(--text-gold)',
+            marginTop: '8px',
+            textDecoration: 'underline'
+          }}
+        >
+          💡 احصل على مفتاح مجاني من Google AI Studio
+        </a>
       </div>
 
       <div>

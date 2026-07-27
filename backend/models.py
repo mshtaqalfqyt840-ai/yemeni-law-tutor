@@ -34,3 +34,10 @@ class SystemStats(BaseModel):
     accuracy: str
     response_time: str
     engine: str
+
+class APIKeyRequest(BaseModel):
+    api_key: str
+
+class APIKeyResponse(BaseModel):
+    success: bool
+    message: str

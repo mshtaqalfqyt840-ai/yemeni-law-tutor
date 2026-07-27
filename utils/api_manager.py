@@ -27,10 +27,11 @@ class APIKeyManager:
     # قيم Placeholder شائعة يجب تجاهلها دوماً
     _PLACEHOLDER_VALUES = {
         "YOUR_API_KEY_1", "YOUR_API_KEY_2", "YOUR_API_KEY",
-        "DEFAULT_DUMMY_KEY", "",
+        "YOUR_GEMINI_API_KEY_HERE", "DEFAULT_DUMMY_KEY", "",
     }
 
     def __init__(self, config_path: Optional[str] = None):
+        self.config_path = config_path
         self.keys: List[str] = []
         self.failed_keys: Set[str] = set()   # فشل مؤقت (مثال: 429 Rate Limit)
         self.invalid_keys: Set[str] = set()  # فشل دائم مؤكَّد من Google (API_KEY_INVALID)
@@ -84,11 +85,12 @@ class APIKeyManager:
         """يضيف المفتاح للقائمة الداخلية فقط إذا اجتاز فحص الصيغة."""
         key = key.strip() if isinstance(key, str) else key
         if not self.is_valid_key_format(key):
-            masked = f"{key[:6]}..." if key else "(فارغ)"
-            print(
-                f"⚠️ تحذير: تم تجاهل مفتاح غير صالح الصيغة من [{source}]: '{masked}' — "
-                f"مفاتيح Gemini الرسمية يجب أن تبدأ بـ 'AIzaSy' أو 'AQ.'."
-            )
+            if key and key not in self._PLACEHOLDER_VALUES:
+                masked = f"{key[:6]}..." if key else "(فارغ)"
+                print(
+                    f"⚠️ تحذير: تم تجاهل مفتاح غير صالح الصيغة من [{source}]: '{masked}' — "
+                    f"مفاتيح Gemini الرسمية يجب أن تبدأ بـ 'AIzaSy' أو 'AQ.'."
+                )
             return False
         if key not in self.keys:
             self.keys.append(key)
@@ -97,12 +99,25 @@ class APIKeyManager:
     def _rebuild_iterator(self) -> None:
         self._key_iterator = itertools.cycle(self.keys) if self.keys else None
 
-    def add_key(self, key: str, source: str = "إدخال المستخدم (Streamlit)") -> bool:
+    def add_key(self, key: str, source: str = "إدخال المستخدم") -> bool:
         """يضيف مفتاحاً جديداً في وقت التشغيل بعد التحقق من صيغته (AIzaSy أو AQ.)."""
         with self.lock:
             added = self._add_key_if_valid(key, source=source)
             if added:
                 self._rebuild_iterator()
+                if self.config_path and os.path.exists(self.config_path):
+                    try:
+                        with open(self.config_path, 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                        keys_list = data.get("gemini_api_keys", [])
+                        clean_key = key.strip()
+                        if clean_key not in keys_list:
+                            keys_list.append(clean_key)
+                            data["gemini_api_keys"] = keys_list
+                            with open(self.config_path, 'w', encoding='utf-8') as f:
+                                json.dump(data, f, indent=2, ensure_ascii=False)
+                    except Exception as e:
+                        print(f"⚠️ تعذر حفظ المفتاح في {self.config_path}: {e}")
         return added
 
     def has_keys(self) -> bool:
@@ -145,6 +160,8 @@ class APIKeyManager:
 
     def mark_key_as_failed(self, key: str, error: Exception = None) -> bool:
         """يسجّل فشل المفتاح ويحلل نوع الخطأ (404, 429, API_KEY_INVALID)."""
+        if not key or not isinstance(key, str):
+            return False
         err_msg = str(error) if error else "Unknown"
         print(f"⚠️ تسجيل خطأ للمفتاح '{key[:10]}...': {err_msg}")
 

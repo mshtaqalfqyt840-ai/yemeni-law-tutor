@@ -59,6 +59,16 @@ def get_api_manager():
     return APIKeyManager(config_path)
 
 
+def add_user_api_key(api_key: str) -> Tuple[bool, str]:
+    """إضافة وتفعيل مفتاح Gemini API جديد من واجهة المستخدم."""
+    api_manager = get_api_manager()
+    success = api_manager.add_key(api_key, source="واجهة React")
+    if success:
+        return True, "✅ تم حفظ وتفعيل المفتاح بنجاح!"
+    else:
+        return False, "⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ."
+
+
 def extract_direct_article_number(user_input: str) -> str:
     """استخراج رقم المادة مباشرة من السؤال إذا طُلبت صراحةً."""
     cleaned = user_input.strip()
@@ -143,6 +153,9 @@ def retrieve_sources(user_question: str, previous_msgs: list) -> Tuple[List[Docu
         sources = retriever.invoke(user_question)
         return sources, user_question
 
+    if len(previous_msgs) > CHAT_HISTORY_MAX_MESSAGES:
+        previous_msgs = previous_msgs[-CHAT_HISTORY_MAX_MESSAGES:]
+
     chat_history = []
     for msg in previous_msgs:
         if msg.role == "user":
@@ -162,9 +175,15 @@ def retrieve_sources(user_question: str, previous_msgs: list) -> Tuple[List[Docu
     ])
 
     usable_attempts = len([k for k in api_manager.keys if k not in api_manager.invalid_keys])
+    if usable_attempts == 0:
+        try:
+            return retriever.invoke(user_question), user_question
+        except Exception:
+            return [], user_question
+
     sources = []
-    active_key = None
-    for attempt in range(max(1, usable_attempts)):
+    for attempt in range(usable_attempts):
+        active_key = None
         try:
             active_key = api_manager.get_active_key()
             llm_retriever = ChatGoogleGenerativeAI(
@@ -182,7 +201,10 @@ def retrieve_sources(user_question: str, previous_msgs: list) -> Tuple[List[Docu
             break
         except Exception as e:
             if active_key:
-                api_manager.mark_key_as_failed(active_key, error=e)
+                try:
+                    api_manager.mark_key_as_failed(active_key, error=e)
+                except Exception:
+                    pass
 
     return sources, user_question
 

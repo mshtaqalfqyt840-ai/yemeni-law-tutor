@@ -13,13 +13,16 @@ from backend.models import (
     ChatRequest,
     ChatResponse,
     SuggestionItem,
-    SystemStats
+    SystemStats,
+    APIKeyRequest,
+    APIKeyResponse
 )
 from backend.services import (
     get_vectorstore,
     get_default_suggestions,
     generate_chat_answer_sync,
-    stream_chat_answer_sse
+    stream_chat_answer_sse,
+    add_user_api_key
 )
 
 app = FastAPI(
@@ -71,7 +74,7 @@ def get_system_stats():
         status=status,
         accuracy="100%",
         response_time="<0.3s",
-        engine="AI v3 (Gemini 2.5/LangChain)"
+        engine="AI v3 (Gemini Flash Latest)"
     )
 
 
@@ -79,6 +82,13 @@ def get_system_stats():
 def get_suggestions():
     """الحصول على بطاقات الاقتراحات الأربعة للواجهة."""
     return get_default_suggestions()
+
+
+@app.post("/api/keys", response_model=APIKeyResponse, tags=["System"])
+def set_api_key(request: APIKeyRequest):
+    """إضافة وتفعيل مفتاح Gemini API جديد من واجهة المستخدم."""
+    success, message = add_user_api_key(request.api_key)
+    return APIKeyResponse(success=success, message=message)
 
 
 @app.post("/api/chat", response_model=ChatResponse, tags=["Chat"])

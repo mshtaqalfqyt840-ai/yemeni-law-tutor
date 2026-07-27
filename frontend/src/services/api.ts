@@ -51,7 +51,7 @@ export const DEFAULT_STATS: SystemStats = {
   status: "متصل",
   accuracy: "100%",
   response_time: "<0.3s",
-  engine: "AI v3 (Gemini 2.5/LangChain)"
+  engine: "AI v3 (Gemini Flash Latest)"
 };
 
 export async function fetchStats(): Promise<SystemStats> {
@@ -71,6 +71,22 @@ export async function fetchSuggestions(): Promise<SuggestionItem[]> {
     return await res.json();
   } catch (err) {
     return DEFAULT_SUGGESTIONS;
+  }
+}
+
+export async function saveApiKey(apiKey: string): Promise<{ success: boolean; message: string }> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/keys`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: apiKey })
+    });
+    if (!res.ok) {
+      return { success: false, message: 'تعذر الاتصال بالخادم لحفظ المفتاح.' };
+    }
+    return await res.json();
+  } catch (err: any) {
+    return { success: false, message: err.message || 'حدث خطأ في الاتصال.' };
   }
 }
 

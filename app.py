@@ -496,3 +496,17 @@ if user_question:
                 "content": answer,
                 "sources": sources
             })
+
+# ── 8. تذييل الصفحة الفاخر (Luxury Digital Diwan Footer 2026) ──
+st.markdown("""
+<div class="diwan-footer">
+    <div class="footer-brand">
+        <span>⚖️ الديوان الرقمي للقانون المدني اليمني</span>
+        <span class="footer-dot">•</span>
+        <span>القرار الجمهوري رقم (14) لسنة 2002م</span>
+    </div>
+    <div class="footer-copy">
+        تم التطوير وفق أحدث معايير الذكاء الاصطناعي القانوني 2026 | جميع الحقوق محفوظة
+    </div>
+</div>
+""", unsafe_allow_html=True)

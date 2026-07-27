@@ -163,6 +163,7 @@ def retrieve_sources(user_question: str, previous_msgs: list) -> Tuple[List[Docu
 
     usable_attempts = len([k for k in api_manager.keys if k not in api_manager.invalid_keys])
     sources = []
+    active_key = None
     for attempt in range(max(1, usable_attempts)):
         try:
             active_key = api_manager.get_active_key()
@@ -180,7 +181,8 @@ def retrieve_sources(user_question: str, previous_msgs: list) -> Tuple[List[Docu
             })
             break
         except Exception as e:
-            api_manager.mark_key_as_failed(active_key, error=e)
+            if active_key:
+                api_manager.mark_key_as_failed(active_key, error=e)
 
     return sources, user_question
 
@@ -207,6 +209,7 @@ def generate_chat_answer_sync(user_question: str, previous_msgs: list) -> Tuple[
     tutor_prompt = get_tutor_prompt()
     usable_attempts = len([k for k in api_manager.keys if k not in api_manager.invalid_keys])
     answer = ""
+    active_key = None
 
     for attempt in range(max(1, usable_attempts)):
         try:
@@ -225,9 +228,14 @@ def generate_chat_answer_sync(user_question: str, previous_msgs: list) -> Tuple[
             if answer and len(answer.strip()) > 0:
                 break
         except Exception as e:
-            api_manager.mark_key_as_failed(active_key, error=e)
+            if active_key:
+                api_manager.mark_key_as_failed(active_key, error=e)
             if attempt == usable_attempts - 1:
-                answer = f"❌ تعثر الحصول على الرد: {str(e)}"
+                answer = (
+                    "❌ تنبيه: تعذر الاتصال بمحرك الذكاء الاصطناعي.\n"
+                    "يرجى التأكد من إضافة مفتاح Google Gemini API صحيح داخل ملف `config/api_keys.json` "
+                    f"(تفاصيل الخطأ: {str(e)})"
+                )
 
     return answer, formatted_sources
 
@@ -254,6 +262,7 @@ async def stream_chat_answer_sse(user_question: str, previous_msgs: list):
 
     tutor_prompt = get_tutor_prompt()
     usable_attempts = len([k for k in api_manager.keys if k not in api_manager.invalid_keys])
+    active_key = None
 
     for attempt in range(max(1, usable_attempts)):
         try:
@@ -282,9 +291,15 @@ async def stream_chat_answer_sse(user_question: str, previous_msgs: list):
             }
             break
         except Exception as e:
-            api_manager.mark_key_as_failed(active_key, error=e)
+            if active_key:
+                api_manager.mark_key_as_failed(active_key, error=e)
             if attempt == usable_attempts - 1:
+                err_msg = (
+                    "❌ تنبيه: تعذر الاتصال بمحرك الذكاء الاصطناعي.\n"
+                    "يرجى التأكد من إضافة مفتاح Google Gemini API صالح وفعّال في ملف `config/api_keys.json` "
+                    f"(تفاصيل الخطأ: {str(e)})"
+                )
                 yield {
                     "event": "error",
-                    "data": json.dumps({"error": f"تعثر البث: {str(e)}"}, ensure_ascii=False)
+                    "data": json.dumps({"error": err_msg}, ensure_ascii=False)
                 }

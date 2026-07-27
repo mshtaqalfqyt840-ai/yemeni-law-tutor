@@ -1,6 +1,7 @@
 import type { SuggestionItem, SystemStats, SourceDocument, Message } from '../types';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.DEV ? '' : 'http://127.0.0.1:8000';
+
 
 export const DEFAULT_SUGGESTIONS: SuggestionItem[] = [
   {

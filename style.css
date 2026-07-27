@@ -899,3 +899,85 @@ textarea:focus-visible,
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gold-500);
 }
+
+/* ── 13. زر القائمة الجانبية التفاعلي (Modern Mobile App Hamburger Menu ☰) ── */
+
+/* إخفاء الهيدر الرمادي الافتراضي لستريمليت وجعل خلفيته شفافة */
+[data-testid="stHeader"] {
+    background: transparent !important;
+    z-index: 99990 !important;
+    height: 3.5rem !important;
+}
+
+/* تنسيق زر فتح القائمة (الخطوط الثلاثة ☰) */
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: fixed !important;
+    top: 14px !important;
+    right: 14px !important; /* اتجاه RTL لليمين */
+    z-index: 99999 !important;
+}
+
+[data-testid="collapsedControl"] button,
+[data-testid="stSidebarCollapseButton"] button {
+    background: var(--ink-800) !important;
+    border: 1px solid var(--border-gold) !important;
+    border-radius: var(--radius-md) !important;
+    color: var(--gold-500) !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), var(--shadow-gold) !important;
+    transition: transform var(--transition-base), background var(--transition-base), border-color var(--transition-base) !important;
+    cursor: pointer !important;
+}
+
+[data-testid="collapsedControl"] button:hover,
+[data-testid="stSidebarCollapseButton"] button:hover {
+    background: var(--ink-700) !important;
+    border-color: var(--gold-500) !important;
+    transform: scale(1.06) !important;
+    color: var(--gold-300) !important;
+}
+
+[data-testid="collapsedControl"] button:active,
+[data-testid="stSidebarCollapseButton"] button:active {
+    transform: scale(0.95) !important;
+}
+
+/* استبدال الأيقونة بسهم Streamlit الافتراضي برمز الهامبرغر ☰ المضيء */
+[data-testid="collapsedControl"] button svg,
+[data-testid="stSidebarCollapseButton"] button svg {
+    display: none !important;
+}
+
+[data-testid="collapsedControl"] button::before {
+    content: "☰" !important;
+    font-size: 1.45rem !important;
+    font-weight: 700 !important;
+    color: var(--gold-500) !important;
+    line-height: 1 !important;
+    font-family: inherit !important;
+}
+
+/* عند فتح القائمة، يظهر رمز الإغلاق ✕ */
+[data-testid="stSidebarCollapseButton"] button::before {
+    content: "✕" !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    color: var(--gold-500) !important;
+    line-height: 1 !important;
+    font-family: inherit !important;
+}
+
+/* تحسين حركة فتح وإغلاق الشريط الجانبي لتكون سلسة وسريعة مثل التطبيقات الحديثة */
+[data-testid="stSidebar"] {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), min-width 300ms cubic-bezier(0.4, 0, 0.2, 1), max-width 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: var(--ink-900) !important;
+}

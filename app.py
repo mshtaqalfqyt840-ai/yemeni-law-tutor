@@ -32,7 +32,7 @@ st.set_page_config(
     page_title="المعلّم الذكي – القانون المدني اليمني",
     page_icon="⚖️",
     layout="wide",
-    initial_sidebar_state="auto"
+    initial_sidebar_state="collapsed"
 )
 
 # تحميل ملف CSS الخارجي الموحد

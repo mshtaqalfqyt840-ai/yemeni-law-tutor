@@ -313,15 +313,26 @@ async def stream_chat_answer_sse(user_question: str, previous_msgs: list):
             }
             break
         except Exception as e:
+            err_str = str(e)
             if active_key:
-                api_manager.mark_key_as_failed(active_key, error=e)
+                try:
+                    api_manager.mark_key_as_failed(active_key, error=e)
+                except Exception:
+                    pass
             if attempt == usable_attempts - 1:
-                err_msg = (
-                    "❌ تنبيه: تعذر الاتصال بمحرك الذكاء الاصطناعي.\n"
-                    "يرجى التأكد من إضافة مفتاح Google Gemini API صالح وفعّال في ملف `config/api_keys.json` "
-                    f"(تفاصيل الخطأ: {str(e)})"
-                )
+                if "RESOURCE_EXHAUSTED" in err_str or "429" in err_str or "quota" in err_str.lower():
+                    err_msg = (
+                        "⚠️ **تنبيه الحصة:** تم تجاوز الحد المؤقت لاستخدام مفتاح Gemini API الحالي (Rate Limit / Quota Exceeded).\n\n"
+                        "💡 **حل سريع:** يرجى إدخال مفتاح Gemini API جديد وبديل في الواجهة أو الانتظار دقيقة واحدة وإعادة السؤال."
+                    )
+                else:
+                    err_msg = (
+                        "❌ تنبيه: تعذر الاتصال بمحرك الذكاء الاصطناعي.\n"
+                        "يرجى التأكد من إضافة مفتاح Google Gemini API صالح وفعّال. "
+                        f"(تفاصيل الخطأ: {err_str})"
+                    )
                 yield {
                     "event": "error",
                     "data": json.dumps({"error": err_msg}, ensure_ascii=False)
                 }
+

@@ -458,21 +458,30 @@ if user_question:
                 if answer and len(str(answer).strip()) > 0:
                     break
             except Exception as e:
+                err_str = str(e)
                 if active_key:
                     try:
                         st.session_state.api_manager.mark_key_as_failed(active_key, error=e)
                     except ValueError as ve:
-                        st.error(f"❌ {ve}")
+                        st.warning(f"⚠️ {ve}")
                         st.stop()
-                else:
-                    st.error(f"❌ تعثر الحصول على مفتاح Gemini API صالح: {e}")
+                    except Exception:
+                        pass
+                
+                if "RESOURCE_EXHAUSTED" in err_str or "429" in err_str or "quota" in err_str.lower():
+                    st.warning(
+                        "⚠️ **تنبيه الحصة:** تم تجاوز الحد المؤقت لاستخدام مفتاح Gemini API الحالي (Rate Limit / Quota Exceeded).\n\n"
+                        "💡 **حل سريع:** يمكنك التبديل أو إضافة مفتاح Gemini جديد وبديل في حقل **'🔑 إدارة مفتاح Gemini API'** في أعلى الصفحة، أو الانتظار دقيقة واحدة وإعادة السؤال."
+                    )
                     st.stop()
-
-                if attempt < usable_attempts - 1:
-                    st.toast("⚠️ جاري التبديل للمفتاح البديل...", icon="🔄")
-                else:
-                    st.error(f"❌ تعثر الحصول على الرد: {e}")
+                elif attempt == usable_attempts - 1:
+                    st.error(
+                        "❌ **تعذر الحصول على الرد:**\n\n"
+                        f"يرجى التأكد من صلاحية مفتاح Gemini API المسجل. (تفاصيل: {err_str})"
+                    )
                     st.stop()
+                else:
+                    st.toast("⚠️ جاري المحاولة باستخدام المفتاح البديل...", icon="🔄")
 
         if answer and len(str(answer).strip()) > 0:
             if sources:

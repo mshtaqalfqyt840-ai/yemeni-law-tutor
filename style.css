@@ -221,10 +221,10 @@ html, body, [class*="css"], .stApp {
     50% { transform: scale(1.35); opacity: 0.6; }
 }
 
-/* ── 5. الشريط الجانبي (Sidebar) ── */
-[data-testid="stSidebar"] {
-    background: var(--ink-900) !important;
-    border-left: 1px solid var(--border-gold) !important;
+/* ── 5. إخفاء الشريط الجانبي تماماً لتوحيد الواجهة في شاشة واحدة ── */
+[data-testid="stSidebar"], [data-testid="collapsedControl"] {
+    display: none !important;
+    width: 0 !important;
 }
 
 [data-testid="stSidebar"] > div:first-child {

@@ -106,94 +106,8 @@ def render_source_cards(sources):
             </div>
             """, unsafe_allow_html=True)
 
-# ── 3. الشريط الجانبي (Sidebar) ──
+# ── 3. البيانات الأساسية ──
 total_docs = vectorstore._collection.count() if vectorstore else 0
-
-with st.sidebar:
-    # الهوية البصرية للشريط الجانبي
-    st.markdown("""
-    <div class="sidebar-brand-box">
-        <div class="sidebar-brand-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
-                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
-                <path d="M7 21h10"/>
-                <path d="M12 3v18"/>
-                <path d="M3 7h18"/>
-            </svg>
-        </div>
-        <h2 class="sidebar-brand-title">المعلّم <span>الذكي</span></h2>
-        <p class="sidebar-brand-subtitle">الديوان الرقمي للقانون المدني اليمني<br>القرار الجمهوري رقم (14) لسنة 2002م</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # شارة الاتصال الحي
-    status_label = f"محرك الاسترجاع متصل • {total_docs:,} مادة" if vectorstore else "قاعدة البيانات غير متصلة"
-    st.markdown(f"""
-    <div class="live-status-pill">
-        <span class="live-status-dot"></span>
-        <span>{status_label}</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── إدخال مفتاح Gemini API في الشريط الجانبي ──
-    st.markdown('<p class="sidebar-stats-heading">🔑 مفتاح الذكاء الاصطناعي (Gemini API)</p>', unsafe_allow_html=True)
-    user_api_key = st.text_input(
-        "أدخل مفتاحك لتفعيل المحادثة:",
-        type="password",
-        placeholder="AIzaSy... أو AQ...",
-        help="احصل على مفتاح مجاني من Google AI Studio ولصقه هنا",
-        key="sidebar_gemini_key"
-    )
-    if user_api_key:
-        if st.session_state.api_manager.add_key(user_api_key, source="الشريط الجانبي"):
-            st.success("✅ تم تفعيل المفتاح بنجاح!")
-        else:
-            st.error("⚠️ صيغة المفتاح غير صالحة (يجب أن يبدأ بـ AIzaSy أو AQ.)")
-    elif not st.session_state.api_manager.has_usable_key():
-        st.caption("💡 [احصل على مفتاح مجاني من Google AI Studio](https://aistudio.google.com/app/apikey)")
-
-    st.markdown('<p class="sidebar-stats-heading">📊 إحصائيات وأداء النظام</p>', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class="sidebar-stats-grid">
-        <div class="sidebar-stat-card">
-            <span class="sidebar-stat-num">{total_docs:,}</span>
-            <span class="sidebar-stat-lbl">مادة مفهرسة</span>
-        </div>
-        <div class="sidebar-stat-card">
-            <span class="sidebar-stat-num">100%</span>
-            <span class="sidebar-stat-lbl">دقة الإسناد</span>
-        </div>
-        <div class="sidebar-stat-card">
-            <span class="sidebar-stat-num">&lt;0.3s</span>
-            <span class="sidebar-stat-lbl">سرعة الاسترجاع</span>
-        </div>
-        <div class="sidebar-stat-card">
-            <span class="sidebar-stat-num">AI v3</span>
-            <span class="sidebar-stat-lbl">المحرك الذكي</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # صندوق التلميح الذكي
-    st.markdown("""
-    <div class="sidebar-tip-card">
-        <div class="tip-icon-header">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
-            <span>تلميح التأصيل السريع</span>
-        </div>
-        <p>اكتب رقم المادة مباشرة (مثال: <strong>138</strong> أو <strong>مادة (15)</strong>) لاستحضار نصها القانوني وشرحها فوراً!</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # زر مسح المحادثة
-    if st.button("🗑️  مسح المحادثة والبدء من جديد", use_container_width=True):
-        st.session_state.messages = []
-        st.session_state.pending_prompt = None
-        st.rerun()
-
-    if not vectorstore:
-        st.error("⚠️ قاعدة البيانات غير موجودة! شغّل سكربت الفهرسة لبنائها أولاً.")
 
 
 # ── 4. الهيدر الرئيسي (Hero Header) ──
@@ -255,6 +169,33 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+# ── 4.5. شريط أدوات التحكم والعمليات السريعة ──
+ctrl_col1, ctrl_col2 = st.columns([1, 1])
+with ctrl_col1:
+    if st.button("🗑️ مسح المحادثة والبدء من جديد", use_container_width=True, key="reset_chat_main"):
+        st.session_state.messages = []
+        st.session_state.pending_prompt = None
+        st.rerun()
+
+with ctrl_col2:
+    has_key = st.session_state.api_manager.has_usable_key()
+    with st.expander("🔑 إدارة مفتاح Gemini API", expanded=not has_key):
+        main_api_key = st.text_input(
+            "ألصق مفتاح Gemini API هنا لتفعيل المحادثة:",
+            type="password",
+            placeholder="AIzaSy... أو AQ...",
+            key="main_page_api_key"
+        )
+        if main_api_key:
+            if st.session_state.api_manager.add_key(main_api_key, source="الواجهة الرئيسية"):
+                st.success("✅ تم تفعيل المفتاح بنجاح!")
+                st.rerun()
+            else:
+                st.error("⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ.")
+        elif not has_key:
+            st.caption("💡 [احصل على مفتاح مجاني من Google AI Studio](https://aistudio.google.com/app/apikey)")
+
 
 # ── 5. بطاقات الاقتراحات (تظهر فقط عند بداية المحادثة) ──
 if len(st.session_state.messages) == 0:

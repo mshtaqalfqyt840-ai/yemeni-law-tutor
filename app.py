@@ -305,11 +305,16 @@ with ctrl_col2:
             key="main_page_api_key"
         )
         if main_api_key:
-            if st.session_state.api_manager.add_key(main_api_key, source="الواجهة الرئيسية"):
-                st.success("✅ تم تفعيل المفتاح بنجاح!")
-                st.rerun()
+            clean_k = main_api_key.strip()
+            if clean_k not in st.session_state.api_manager.keys:
+                if st.session_state.api_manager.add_key(clean_k, source="الواجهة الرئيسية"):
+                    st.success("✅ تم تفعيل المفتاح بنجاح!")
+                    st.rerun()
+                else:
+                    st.error("⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ.")
             else:
-                st.error("⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ.")
+                st.success("✅ المفتاح مفعّل وجاهز للاستخدام!")
+
         elif not has_key:
             st.caption("💡 [احصل على مفتاح مجاني من Google AI Studio](https://aistudio.google.com/app/apikey)")
 
@@ -345,11 +350,16 @@ if user_question:
             st.markdown("يمكنك الحصول على مفتاح مجاني وسريع في أقل من دقيقة عبر **[Google AI Studio](https://aistudio.google.com/app/apikey)**.")
             inline_key = st.text_input("ألصق مفتاح Gemini API هنا:", type="password", placeholder="AIzaSy... أو AQ...", key="inline_gemini_key")
             if inline_key:
-                if st.session_state.api_manager.add_key(inline_key, source="واجهة المحادثة"):
-                    st.success("✅ تم حفظ وتفعيل المفتاح بنجاح! أعد إرسال سؤالك الآن.")
-                    st.rerun()
+                clean_ik = inline_key.strip()
+                if clean_ik not in st.session_state.api_manager.keys:
+                    if st.session_state.api_manager.add_key(clean_ik, source="واجهة المحادثة"):
+                        st.success("✅ تم حفظ وتفعيل المفتاح بنجاح! يمكنك الطرح الآن.")
+                        st.rerun()
+                    else:
+                        st.error("⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ.")
                 else:
-                    st.error("⚠️ صيغة المفتاح غير صالحة. يجب أن يبدأ بـ AIzaSy أو AQ.")
+                    st.success("✅ المفتاح مفعّل وجاهز للاستخدام!")
+
         st.stop()
 
     with st.chat_message("assistant", avatar="⚖️"):

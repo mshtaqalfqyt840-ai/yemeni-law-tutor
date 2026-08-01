@@ -6,13 +6,15 @@ interface TopBarProps {
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
   onReset: () => void;
+  onOpenDevModal?: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
   stats,
   sidebarOpen,
   onToggleSidebar,
-  onReset
+  onReset,
+  onOpenDevModal
 }) => {
   return (
     <header className="diwan-top-bar">
@@ -29,7 +31,6 @@ export const TopBar: React.FC<TopBarProps> = ({
             alignItems: 'center',
             borderRadius: '8px'
           }}
-
           title="تبديل الشريط الجانبي"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -56,6 +57,15 @@ export const TopBar: React.FC<TopBarProps> = ({
       </div>
 
       <div className="top-bar-actions">
+        {onOpenDevModal && (
+          <button
+            onClick={onOpenDevModal}
+            className="topbar-dev-badge"
+            title="خيار المطور ومهندس النظام - مشتاق الفقية"
+          >
+            <span>👨‍💻 مشتاق الفقية</span>
+          </button>
+        )}
         <div className="status-pill">
           <span className="status-dot" />
           <span>{stats.status} • {stats.total_docs.toLocaleString()} مادة</span>

@@ -11,13 +11,30 @@ export interface SourceDocument {
   metadata: SourceMetadata;
 }
 
+export interface RagStats {
+  retrieved_count: number;
+  response_time: string;
+  source_verified?: boolean;
+  engine?: string;
+  status?: string;
+  search_type?: string;
+}
+
 export interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   sources?: SourceDocument[];
+  rag_stats?: RagStats;
   timestamp: string;
   isStreaming?: boolean;
+}
+
+export interface SavedChat {
+  id: string;
+  title: string;
+  date: string;
+  messages: Message[];
 }
 
 export interface SuggestionItem {

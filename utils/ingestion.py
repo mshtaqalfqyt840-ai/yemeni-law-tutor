@@ -14,6 +14,7 @@ from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from utils.legal_splitter import split_law_by_article
+from utils.clean_source import clean_official_law_text
 from config.settings import EMBEDDING_MODEL
 
 
@@ -47,22 +48,22 @@ def read_pdf_file(pdf_path: str) -> str:
 
 def ingest_documents(rebuild: bool = False):
     """
-    يقرأ جميع ملفات PDF و TXT من مجلد data/،
-    يقسّمها بالمادة القانونية، ويبني قاعدة البيانات المتجهة.
+    يقرأ الملف الرسمي yemeni_civil_law_official.txt فقط من مجلد data/،
+    يستبعد ملف source.txt نهائياً، ينظّف النص، يقسّمه بمواد القانون الموحدة، ويبني قاعدة البيانات.
     """
     base_dir = os.path.dirname(os.path.dirname(__file__))
     data_dir = os.path.join(base_dir, "data")
     persist_dir = os.path.join(base_dir, "chroma_db_v2")
 
-    pdf_files = sorted(glob.glob(os.path.join(data_dir, "*.pdf")))
-    txt_files = sorted(glob.glob(os.path.join(data_dir, "*.txt")))
-    all_files = pdf_files + txt_files
+    # اعتماد مصدر النص yemeni_civil_law_official.txt فقط واستبعاد source.txt نهائياً
+    official_file = os.path.join(data_dir, "yemeni_civil_law_official.txt")
+    all_files = [official_file] if os.path.exists(official_file) else []
 
     if not all_files:
-        print("لم يتم العثور على أي ملفات (PDF أو TXT) في مجلد data/.")
+        print("لم يتم العثور على أي ملفات رسمية في مجلد data/.")
         return None
 
-    print(f"الملفات المكتشفة: {len(pdf_files)} PDF  +  {len(txt_files)} TXT")
+    print(f"الملفات المقبولة للفهرسة: {[os.path.basename(f) for f in all_files]}")
 
     seen_hashes = set()
     unique_files = []
@@ -101,7 +102,10 @@ def ingest_documents(rebuild: bool = False):
             print(f"  الملف فارغ أو تعذّر قراءته.")
             continue
 
-        docs = split_law_by_article(raw_text, source_name=filename)
+        # تطبيق عملية التنظيف الشكلي المسبق للنص الرسمي
+        cleaned_text = clean_official_law_text(raw_text)
+
+        docs = split_law_by_article(cleaned_text, source_name=filename)
         if docs:
             documents.extend(docs)
             print(f"  تم استخراج {len(docs)} مادة قانونية.")
@@ -115,7 +119,6 @@ def ingest_documents(rebuild: bool = False):
     print(f"إجمالي المواد القانونية المستخرجة: {len(documents)}")
 
     print(f"جاري تهيئة نموذج التضمين المحلي ({EMBEDDING_MODEL})...")
-    print("ملاحظة: سيتم تحميل النموذج أول مرة فقط (~120MB) ثم يُخزّن محلياً")
     embeddings = HuggingFaceEmbeddings(
         model_name=EMBEDDING_MODEL,
         model_kwargs={"device": "cpu"},
@@ -124,6 +127,7 @@ def ingest_documents(rebuild: bool = False):
 
     if rebuild and os.path.exists(persist_dir):
         import shutil
+
         try:
             print("إفراغ قاعدة البيانات القديمة قبل إعادة البناء...")
             shutil.rmtree(persist_dir, ignore_errors=True)
@@ -133,8 +137,7 @@ def ingest_documents(rebuild: bool = False):
     print(f"جاري بناء المتجهات وحفظها في: {persist_dir}")
     try:
         vectorstore = Chroma(
-            embedding_function=embeddings,
-            persist_directory=persist_dir
+            embedding_function=embeddings, persist_directory=persist_dir
         )
 
         batch_size = 50
@@ -143,14 +146,18 @@ def ingest_documents(rebuild: bool = False):
         for i in range(0, len(documents), batch_size):
             batch = documents[i : i + batch_size]
             batch_num = i // batch_size + 1
-            print(f"  الدفعة {batch_num}/{total_batches} (معالجة {i} حتى {min(i + batch_size, len(documents))} من أصل {len(documents)})...")
+            print(
+                f"  الدفعة {batch_num}/{total_batches} (معالجة {i} حتى {min(i + batch_size, len(documents))} من أصل {len(documents)})..."
+            )
             try:
                 vectorstore.add_documents(batch)
             except Exception as e:
                 print(f"\n❌ خطأ أثناء تضمين الدفعة {batch_num}: {e}")
 
         total_in_db = vectorstore._collection.count()
-        print(f"\n✅ اكتملت عملية البناء بنجاح! إجمالي السجلات في قاعدة البيانات: {total_in_db}")
+        print(
+            f"\n✅ اكتملت عملية البناء بنجاح! إجمالي السجلات في قاعدة البيانات: {total_in_db}"
+        )
         return vectorstore
 
     except Exception as e:

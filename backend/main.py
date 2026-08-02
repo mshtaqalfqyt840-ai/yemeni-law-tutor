@@ -19,7 +19,8 @@ from contextlib import asynccontextmanager
 # pyrefly: ignore [missing-import]
 from fastapi import FastAPI, HTTPException, Request, Response
 # pyrefly: ignore [missing-import]
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from sse_starlette.sse import EventSourceResponse
@@ -217,5 +218,27 @@ async def chat_stream(request: ChatRequest):
     - حدث verification_status: يُرسل عند اكتمال البث بحالة التوثيق النهائية.
     """
     return EventSourceResponse(stream_chat_answer_sse(request.prompt, request.messages))
+
+
+# ── استضافة وتخديم واجهة الريأكت (React SPA Static Serving) في الإنتاج والسحابة ──
+frontend_dist = os.path.join(ROOT_DIR, "frontend", "dist")
+if os.path.exists(frontend_dist):
+    assets_dir = os.path.join(frontend_dist, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        # السماح فقط بالمسارات التي ليست API
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="API endpoint not found")
+        file_path = os.path.join(frontend_dist, full_path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        index_html = os.path.join(frontend_dist, "index.html")
+        if os.path.exists(index_html):
+            return FileResponse(index_html)
+        raise HTTPException(status_code=404, detail="Frontend index.html not found")
+
 
 

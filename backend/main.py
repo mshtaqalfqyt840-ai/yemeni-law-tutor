@@ -2,7 +2,16 @@ import os
 import sys
 
 # ── فحص بيئة التشغيل (Venv Guard) ──
-if sys.prefix == sys.base_prefix:
+# نتجاوز الفحص في بيئات الاستضافة السحابية و Docker (مثل Render، HuggingFace Spaces، Vercel، أو عند تعيين PORT)
+if (
+    sys.prefix == sys.base_prefix
+    and not os.environ.get("PORT")
+    and not os.environ.get("RENDER")
+    and not os.environ.get("VERCEL")
+    and not os.environ.get("SPACE_ID")
+    and not os.environ.get("IGNORE_VENV_CHECK")
+    and not os.environ.get("RUNNING_IN_DOCKER")
+):
     print("\n" + "=" * 75)
     print("❌ خطأ تشغيلي: يتم تشغيل النظام عبر بايثون العام (Global Python)!")
     print("⚠️ لم يتم تفعيل البيئة الافتراضية الخاصة بالمشروع (venv).")
@@ -239,6 +248,14 @@ if os.path.exists(frontend_dist):
         if os.path.exists(index_html):
             return FileResponse(index_html)
         raise HTTPException(status_code=404, detail="Frontend index.html not found")
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    port = int(os.environ.get("PORT", 8000))
+    print(f"🚀 Starting FastAPI server on 0.0.0.0:{port} ...")
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port, reload=False)
 
 
 

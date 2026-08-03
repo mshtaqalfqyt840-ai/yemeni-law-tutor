@@ -28,5 +28,5 @@ COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 ENV PORT=8000
 EXPOSE 8000
 
-# تشغيل خادم FastAPI على المنفذ 8000 مباشرة
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# تشغيل خادم FastAPI عبر بايثون مباشرة ليتوافق مع أي منفذ في Railway
+CMD ["python", "backend/main.py"]

@@ -24,10 +24,5 @@ COPY . .
 # نسخ ملفات بناء الواجهة من المرحلة الأولى
 COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 
-# تحديد المنفذ (7860 لمنصة Hugging Face Spaces أو 8000 افتراضياً)
-ENV PORT=7860
-ENV PYTHONUNBUFFERED=1
-EXPOSE 7860
-
-# تشغيل خادم FastAPI
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# تشغيل خادم FastAPI على المنفذ المحدد في البيئة (PORT) أو 8000 افتراضياً
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

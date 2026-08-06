@@ -1,17 +1,21 @@
 @echo off
-chcp 65001 >nul
+chcp 65001 > nul
 echo ====================================================================
-echo Starting Yemeni Law Tutor - React + FastAPI
+echo   Yemeni Law AI Tutor (Unified Fullstack App)
+echo   Node.js Backend + React Frontend
 echo ====================================================================
 
-echo [1/2] Starting FastAPI Backend on Port 8000...
-start "FastAPI Backend" /MIN cmd /c ".\venv\Scripts\python.exe -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
+echo [1/2] Starting Node.js Backend Server on Port 8000...
+start "Node.js Backend" /MIN cmd /k "cd /d %~dp0 && node server.js"
 
-echo [2/2] Starting React Frontend on Port 5173...
-start "React Frontend" cmd /c "cd /d "%~dp0frontend" && npm run dev -- --host"
+ping 127.0.0.1 -n 3 > nul
+
+echo [2/2] Starting React Frontend Dev Server on Port 5173...
+start "React Frontend" cmd /k "cd /d %~dp0 && npm run dev -- --host"
 
 echo ====================================================================
-echo  Servers Launched!
-echo  - React Frontend: http://localhost:5173
-echo  - FastAPI Docs:   http://localhost:8000/docs
+echo  Servers Launched Successfully!
+echo  - React Frontend:  http://localhost:5173
+echo  - Node.js Backend: http://localhost:8000
+echo  - Health Check:    http://localhost:8000/api/health
 echo ====================================================================
